@@ -108,8 +108,10 @@ class HostedMediaFile:
                 common.logger.log_debug('adding resolver to cache: %s' % (klass))
                 resolver_cache[klass] = klass()
                 resolvers.append(resolver_cache[klass])
+        # sort resolvers
+        resolvers.sort(key=lambda r: r.get_priority(), reverse=True)
         return resolvers
-    
+
     def __top_domain(self, url):
         elements = urlparse.urlparse(url)
         domain = elements.netloc or elements.path

@@ -71,6 +71,9 @@
 		<setting id="SmoozedResolver_email" visible="true" type="text" label="Username" default=""/>
 		<setting id="SmoozedResolver_password" visible="true" type="text" label="Password" default=""/>
 		<setting id="SmoozedResolver_session_key" visible="false" type="text" default=""/>
+		<setting label="youtube-dl" type="lsep"/>
+		<setting id="YoutubeDLResolver_priority" type="number" label="Priority" default="90"/>
+		<setting id="YoutubeDLResolver_enabled" type="bool" label="Enabled" default="true"/>
 		<setting label="Zevera" type="lsep"/>
 		<setting id="ZeveraResolver_priority" type="number" label="Priority" default="100"/>
 		<setting id="ZeveraResolver_enabled" type="bool" label="Enabled" default="true"/>

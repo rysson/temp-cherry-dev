@@ -1,0 +1,6 @@
+# Python binary files
+*.pyo
+*.pyc
+
+# ViM editor files
+.*.sw?

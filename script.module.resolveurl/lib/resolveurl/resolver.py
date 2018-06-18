@@ -156,7 +156,7 @@ class ResolveUrl(object):
     @classmethod
     def _get_priority(cls):
         try: return int(cls.get_setting('priority'))
-        except: return 100
+        except: return 70 if self.domains == ["*"] else 100
     
     @classmethod
     def _is_enabled(cls):
@@ -175,6 +175,10 @@ class ResolveUrl(object):
         if template is None: template = 'http://{host}/embed-{media_id}.html'
         host = self._get_host(host)
         return template.format(host=host, media_id=media_id)
+
+    def get_priority(self):
+        """Returns resolver priority"""
+        return self._get_priority()
 
     @common.cache.cache_method(cache_limit=1)
     def _auto_update(self, py_source, py_path, key=''):
