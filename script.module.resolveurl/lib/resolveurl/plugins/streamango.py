@@ -43,8 +43,7 @@ class StreamangoResolver(ResolveUrl):
                       source[-1] = re.sub('[^\d]', '', source[-1])
                     source = "/".join(source)
                     headers.update({'Referer': web_url})
-                    #return source + helpers.append_headers(headers)
-                    return self.net.http_GET(source, headers=headers).get_url() + helpers.append_headers(headers)
+                    return source + helpers.append_headers(headers)
         
         raise ResolverError("Unable to locate video")
         
