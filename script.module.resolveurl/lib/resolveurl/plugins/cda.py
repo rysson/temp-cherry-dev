@@ -21,6 +21,7 @@ from lib import helpers
 from resolveurl import common
 from resolveurl.resolver import ResolveUrl, ResolverError
 import string,requests
+from string import maketrans
 
 class CdaResolver(ResolveUrl):
     name = "cda"
@@ -31,10 +32,40 @@ class CdaResolver(ResolveUrl):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
-        web_url = self.get_url(host, media_id)
-        direct = re.findall("""file":"(.*)","file_cast""", requests.get(web_url).content)[0].replace("\\/","/")
-        return direct
-        raise ResolverError('Video Link Not Found')
+        intab = "abcdefghijklmnopqrstuvwxyz"
+        outtab = "nopqrstuvwxyzabcdefghijklm"
+        trantab = maketrans(intab, outtab)
+        web_url = str(self.get_url(host, media_id)).split("?")
+        web_url = web_url[0]
+        result = requests.get(web_url).content
+        if "?wersja=1080p" in result:
+            result = requests.get(web_url + "?wersja=1080p").content
+            direct = re.findall("""file":"(.*)","file_cast""", result)[0].replace("\\/","/")
+            if str(direct).startswith("uggc"):
+                direct = direct.translate(trantab)
+            return direct
+            raise ResolverError('Video Link Not Found')
+        if "?wersja=720p" in result:
+            result = requests.get(web_url + "?wersja=720p").content
+            direct = re.findall("""file":"(.*)","file_cast""", result)[0].replace("\\/","/")
+            if str(direct).startswith("uggc"):
+                direct = direct.translate(trantab)
+            return direct
+            raise ResolverError('Video Link Not Found')
+        if "?wersja=480p" in result:
+            result = requests.get(web_url + "?wersja=480p").content
+            direct = re.findall("""file":"(.*)","file_cast""", result)[0].replace("\\/","/")
+            if str(direct).startswith("uggc"):
+                direct = direct.translate(trantab)
+            return direct
+            raise ResolverError('Video Link Not Found')
+        if "?wersja=360p" in result:
+            result = requests.get(web_url + "?wersja=360p").content
+            direct = re.findall("""file":"(.*)","file_cast""", result)[0].replace("\\/","/")
+            if str(direct).startswith("uggc"):
+                direct = direct.translate(trantab)
+            return direct
+            raise ResolverError('Video Link Not Found')
 
     def get_url(self, host, media_id):
         return 'http://ebd.cda.pl/620x368/%s' % media_id

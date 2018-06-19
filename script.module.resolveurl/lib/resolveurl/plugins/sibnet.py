@@ -21,35 +21,21 @@ from resolveurl import common
 from resolveurl.resolver import ResolveUrl, ResolverError
 from lib import jsunpack, helpers
 
-class VshareResolver(ResolveUrl):
-    name = "vshare"
-    domains = ['vshare.io']
-    pattern = '(?://|\.)(vshare\.io)/\w?/(\w+)'
+class SibnetResolver(ResolveUrl):
+    name = "sibnet"
+    domains = ['sibnet.ru']
+    pattern = '(?:\/\/|\.)(sibnet\.(?:ru|co))\/shell\.php\?videoid=([0-9a-zA-Z\/]+)'
 
     def __init__(self):
         self.net = common.Net()
 
     def get_media_url(self, host, media_id):
-        #import pydevd
-        #pydevd.settrace(stdoutToServer=True, stderrToServer=True)
-        web_url = self.get_url(host, media_id)
-        headers = {'User-Agent': common.RAND_UA,
+        web_url = "http://video.sibnet.ru/shell_config_xml.php?videoid=%s&partner=null&playlist_position=null&playlist_size=0&related_albid=0&related_tagid=0&related_ids=null&repeat=null&nocache" % (media_id)
+        headers = {'User-Agent': """"Mozilla/5.0 (Linux; U; Android 4.1.1; en-us; androVM for VirtualBox ('Tablet' version with phone caps) Build/JRO03S) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30""",
                    'Referer': web_url}
         html = self.net.http_GET(web_url, headers=headers).content
-        js = jsunpack.unpack(html).split(';')
-        try:
-            charcodes = [int(val) for val in js[1].split('=')[-1].replace('[', '').replace(']', '').split(',')]
-            sub = int(''.join(char for char in js[2].split('-')[1] if char.isdigit()))
-        except IndexError:
-            raise ResolverError('Video not found')
-        charcodes = [val-sub for val in charcodes]
-        try:
-            srcs = ''.join(map(unichr, charcodes))
-        except ValueError:
-            raise ResolverError('Video not found')
-        source_list = helpers.scrape_sources(srcs)
-        source = helpers.pick_source(source_list)
-        return source + helpers.append_headers(headers)
+        video = re.findall("""(http:\/\/video\.sibnet\.ru\/v\/.*.mp4)""", html)[0]
+        return video
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, template='http://{host}/v/{media_id}/width-650/height-430/1')
+        return self._default_get_url(host, media_id, template='http://video.{host}/video{media_id}')
