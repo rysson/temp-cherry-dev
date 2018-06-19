@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __resolve_generic__ import ResolveGeneric
-
+import requests
 
 class RapidVideoResolver(ResolveGeneric):
     name = "rapidvideo.com"
@@ -25,4 +25,12 @@ class RapidVideoResolver(ResolveGeneric):
     pattern = '(?://|\.)((?:rapidvideo|raptu|bitporno)\.com)/(?:[ev]/|embed/|\?v=)?([0-9A-Za-z]+)'
 
     def get_url(self, host, media_id):
-        return self._default_get_url(host, media_id, template='https://{host}/embed/{media_id}')
+        content = requests.get(self._default_get_url(host, media_id, template='https://{host}/embed/{media_id}')).content
+        if "&q=1080p" in content:
+            return self._default_get_url(host, media_id, template='https://{host}/e/{media_id}&q=1080p')
+        if "&q=720p" in content:
+            return self._default_get_url(host, media_id, template='https://{host}/e/{media_id}&q=720p')
+        if "&q=480p" in content:
+            return self._default_get_url(host, media_id, template='https://{host}/e/{media_id}&q=480p')
+        if "&q=360p" in content:
+            return self._default_get_url(host, media_id, template='https://{host}/e/{media_id}&q=360p')
