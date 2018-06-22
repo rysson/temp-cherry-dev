@@ -8,6 +8,7 @@
 		<import addon="plugin.video.gdrive" optional="true" />
 		<import addon="script.module.requests" />
 		<import addon="script.module.youtubedl" optional="true" />
+		<import addon="script.module.youtube.dl" optional="true" />
 	</requires>
 	<extension point="xbmc.python.module" library="lib" />
 	<extension point="xbmc.python.pluginsource" library="lib/default.py" />

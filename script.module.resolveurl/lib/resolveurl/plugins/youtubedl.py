@@ -28,7 +28,6 @@ try:
 except ImportError:
     print 'No youtube_dl module'
     YoutubeDL = None
-    raise
 
 
 if YoutubeDL:
